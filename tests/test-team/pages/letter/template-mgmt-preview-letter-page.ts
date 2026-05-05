@@ -113,6 +113,7 @@ export class TemplateMgmtPreviewLetterPage extends TemplateMgmtPreviewBasePage {
       getInlineError: (fieldId: string): Locator =>
         panel.locator(`[data-testid="error-${fieldId}"]`),
       getRecipientOptions: (): Locator => recipientSelect.locator('option'),
+      getIframeSrc: () => previewIframe.getAttribute('src'),
 
       async clickTab() {
         await tab.click();

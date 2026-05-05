@@ -1,7 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 import { TemplateMgmtBasePage } from 'pages/template-mgmt-base-page';
 
-export class TemplateMgmtUploadLetterBasePage extends TemplateMgmtBasePage {
+export abstract class TemplateMgmtUploadLetterBasePage extends TemplateMgmtBasePage {
   submitButton: Locator;
 
   constructor(page: Page) {
@@ -12,16 +12,10 @@ export class TemplateMgmtUploadLetterBasePage extends TemplateMgmtBasePage {
     });
   }
 
-  // Method not intended for use
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async fillForm(input: {
+  abstract fillForm(input: {
     name: string;
     campaignId: string;
     filePath: string;
     language?: string;
-  }) {
-    throw new Error(
-      'This method is not intended to be called directly and should be overidden from an inherited class.'
-    );
-  }
+  }): Promise<void>;
 }

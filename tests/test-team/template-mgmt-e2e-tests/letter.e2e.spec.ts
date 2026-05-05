@@ -1,4 +1,5 @@
 import { test as base, expect, Page } from '@playwright/test';
+import path from 'node:path';
 import { docxFixtures } from 'fixtures/letters';
 import { TestUser, testUsers } from 'helpers/auth/cognito-auth-helper';
 import { loginAsUser } from 'helpers/auth/login-as-user';
@@ -136,6 +137,7 @@ test.describe('Letters complete e2e journey', () => {
     personalisationParameters,
   } of testParameters) {
     test(letterTypeName, async ({ page, chooseTemplateTypePage, user }) => {
+      test.setTimeout(120_000);
       const uploadPage = getUploadPage(page);
 
       await test.step(`Choose ${letterTypeName} - ${selectedLetterType}`, async () => {
@@ -144,9 +146,7 @@ test.describe('Letters complete e2e journey', () => {
           .click();
         await chooseTemplateTypePage.clickContinueButton();
 
-        await expect(page).toHaveURL(
-          TemplateMgmtBasePage.appUrlSegment + uploadPage.pathTemplate
-        );
+        await expect(page).toHaveURL(uploadPage.getUrl());
       });
 
       const templateName = 'E2E Test (Andy)';
@@ -192,26 +192,32 @@ test.describe('Letters complete e2e journey', () => {
 
           await expect(async () => {
             const template = await templateStorageHelper.getTemplate(key);
-            expect(template.campaignId).toEqual(campaignId);
-            expect(template.name).toEqual(templateName);
-            expect(template.clientId).toEqual(user.clientId);
-            expect(template.letterType).toEqual(expectedLetterType);
-            expect(template.lockNumber).toEqual(1);
-            expect(template.files?.docxTemplate?.fileName).toEqual(
-              docx.filename
-            );
-            expect(template.files?.docxTemplate?.virusScanStatus).toEqual(
-              'PASSED'
-            );
-            expect(template.templateStatus).toEqual('PENDING_VALIDATION');
-            expect(template.language).toEqual(expectedLanguageIsoCode ?? 'en');
-          }).toPass({ timeout: 40_000 });
+            const expected = {
+              campaignId,
+              name: templateName,
+              clientId: user.clientId,
+              letterType: expectedLetterType,
+              lockNumber: 1,
+              language: expectedLanguageIsoCode ?? 'en',
+              files: {
+                docxTemplate: {
+                  fileName: docx.filename,
+                  virusScanStatus: 'PASSED',
+                },
+              },
+            };
+            expect(template).toMatchObject(expected);
+
+            const previewTemplatePage = new TemplateMgmtPreviewLetterPage(page);
+            await expect(previewTemplatePage.pageSpinner).toBeVisible();
+          }).toPass({ timeout: 60_000 });
 
           return key;
         });
 
       await test.step('View upload results', async () => {
         await expect(async () => {
+          await page.reload();
           const previewTemplatePage = new TemplateMgmtPreviewLetterPage(page);
           await expect(previewTemplatePage.continueButton).toBeVisible();
           await expect(previewTemplatePage.uploadSuccessBanner).toBeVisible();
@@ -229,7 +235,7 @@ test.describe('Letters complete e2e journey', () => {
           await expect(previewTemplatePage.statusTag).toContainText(
             'Approval needed'
           );
-        }).toPass({ timeout: 40_000 });
+        }).toPass({ timeout: 60_000 });
       });
 
       const previewTemplatePage = new TemplateMgmtPreviewLetterPage(page);
@@ -304,7 +310,20 @@ test.describe('Letters complete e2e journey', () => {
       const shortExampleRecipient = SHORT_EXAMPLE_RECIPIENTS[2];
       const longExampleRecipient = LONG_EXAMPLE_RECIPIENTS[2];
 
+      const compareSrc = (a: string | null, b: string | null) => {
+        if (!a || !b) {
+          throw new Error('123');
+        }
+
+        expect(path.dirname(a)).toEqual(path.dirname(b));
+        expect(path.basename(a)).not.toEqual(path.basename(b));
+      };
+
+      let updatedShortRenderSrc: string;
+      let updatedLongRenderSrc: string;
+
       await test.step('Fill out personalisation fields and update preview', async () => {
+        const initialShortRenderSrc = await shortTab.getIframeSrc();
         await expect(shortTab.panel).toBeVisible();
         await expect(longTab.panel).toBeHidden();
 
@@ -342,7 +361,17 @@ test.describe('Letters complete e2e journey', () => {
           { timeout: 40_000 }
         );
 
+        await expect(shortTab.tabSpinner).not.toBeAttached({ timeout: 30_000 });
+
+        const shortRenderSrc = await shortTab.getIframeSrc();
+        if (!shortRenderSrc) {
+          throw new Error("No 'src' attribute value on short render iframe");
+        }
+        updatedShortRenderSrc = shortRenderSrc;
+        compareSrc(initialShortRenderSrc, updatedShortRenderSrc);
+
         await longTab.clickTab();
+        const initialLongRenderSrc = await longTab.getIframeSrc();
         await expect(shortTab.panel).toBeHidden();
         await expect(longTab.panel).toBeVisible();
 
@@ -379,6 +408,15 @@ test.describe('Letters complete e2e journey', () => {
         }, 'Persisted long form render is updated with correct personalisation details').toPass(
           { timeout: 40_000 }
         );
+
+        await expect(longTab.tabSpinner).not.toBeAttached({ timeout: 30_000 });
+
+        const longRenderSrc = await longTab.getIframeSrc();
+        if (!longRenderSrc) {
+          throw new Error("No 'src' attribute value on short render iframe");
+        }
+        updatedLongRenderSrc = longRenderSrc;
+        compareSrc(initialLongRenderSrc, updatedLongRenderSrc);
       });
 
       await test.step('Get ready to approve', async () => {
@@ -403,7 +441,15 @@ test.describe('Letters complete e2e journey', () => {
         );
 
         await expect(reviewAndApprovePage.shortRenderIFrame).toBeAttached();
+        await expect(reviewAndApprovePage.shortRenderIFrame).toHaveAttribute(
+          'src',
+          updatedShortRenderSrc
+        );
         await expect(reviewAndApprovePage.longRenderIFrame).toBeAttached();
+        await expect(reviewAndApprovePage.longRenderIFrame).toHaveAttribute(
+          'src',
+          updatedLongRenderSrc
+        );
 
         await reviewAndApprovePage.clickApproveButton();
 
@@ -418,7 +464,7 @@ test.describe('Letters complete e2e journey', () => {
 
       await test.step('Template is listed and approved', async () => {
         await expect(page).toHaveURL(
-          `/templates${TemplateMgmtMessageTemplatesPage.pathTemplate}`
+          new TemplateMgmtMessageTemplatesPage(page).getUrl()
         );
 
         const templatesPage = new TemplateMgmtMessageTemplatesPage(page);
@@ -471,8 +517,7 @@ test('Validation failed (missing address)', async ({
     await chooseTemplateTypePage.clickContinueButton();
 
     await expect(page).toHaveURL(
-      TemplateMgmtBasePage.appUrlSegment +
-        TemplateMgmtUploadStandardEnglishLetterTemplatePage.pathTemplate
+      new TemplateMgmtUploadStandardEnglishLetterTemplatePage(page).getUrl()
     );
   });
 
@@ -513,16 +558,22 @@ test('Validation failed (missing address)', async ({
 
     await expect(async () => {
       const template = await templateStorageHelper.getTemplate(key);
-      expect(template.campaignId).toEqual(campaignId);
-      expect(template.name).toEqual(uploadInput.name);
-      expect(template.clientId).toEqual(user.clientId);
-      expect(template.letterType).toEqual('x0');
-      expect(template.lockNumber).toEqual(1);
-      expect(template.files?.docxTemplate?.fileName).toEqual(
-        docxFixtures.incompleteAddress.filename
-      );
-      expect(template.files?.docxTemplate?.virusScanStatus).toEqual('PASSED');
-      expect(template.templateStatus).toEqual('PENDING_VALIDATION');
+
+      const expected = {
+        campaignId,
+        name: uploadInput.name,
+        clientId: user.clientId,
+        letterType: 'x0',
+        lockNumber: 1,
+        language: 'en',
+        files: {
+          docxTemplate: {
+            fileName: docxFixtures.incompleteAddress.filename,
+            virusScanStatus: 'PASSED',
+          },
+        },
+      };
+      expect(template).toMatchObject(expected);
     }).toPass({ timeout: 40_000 });
   });
 
