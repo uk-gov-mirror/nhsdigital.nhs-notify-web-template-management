@@ -217,7 +217,6 @@ test.describe('Letters complete e2e journey', () => {
 
       await test.step('View upload results', async () => {
         await expect(async () => {
-          await page.reload();
           const previewTemplatePage = new TemplateMgmtPreviewLetterPage(page);
           await expect(previewTemplatePage.continueButton).toBeVisible();
           await expect(previewTemplatePage.uploadSuccessBanner).toBeVisible();
@@ -235,7 +234,7 @@ test.describe('Letters complete e2e journey', () => {
           await expect(previewTemplatePage.statusTag).toContainText(
             'Approval needed'
           );
-        }).toPass({ timeout: 60_000 });
+        }).toPass({ timeout: 40_000 });
       });
 
       const previewTemplatePage = new TemplateMgmtPreviewLetterPage(page);
@@ -312,7 +311,9 @@ test.describe('Letters complete e2e journey', () => {
 
       const compareSrc = (a: string | null, b: string | null) => {
         if (!a || !b) {
-          throw new Error('123');
+          throw new Error(
+            `One of the compared src values is null. a: ${a} - b: ${b}`
+          );
         }
 
         expect(path.dirname(a)).toEqual(path.dirname(b));
