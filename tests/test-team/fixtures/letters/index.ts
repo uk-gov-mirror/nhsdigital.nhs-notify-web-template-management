@@ -73,5 +73,6 @@ export const docxFixtures = {
   randomBytes: getFile('docx', 'random-bytes.docx'),
   randomBytesZipped: getFile('docx', 'random-bytes-zipped.docx'),
   standard: getFile('docx', 'standard-english-template.docx'),
+  tooLarge: getFile('docx', 'too-large.docx'),
   unexpectedAddressLines: getFile('docx', 'unexpected-address-lines.docx'),
 };

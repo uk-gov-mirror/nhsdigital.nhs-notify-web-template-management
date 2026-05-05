@@ -102,6 +102,24 @@ test.describe('Upload Standard English Letter Template Page', () => {
       });
     });
 
+    test('error when file that is too large is submitted', async ({ page }) => {
+      const uploadPage =
+        new TemplateMgmtUploadStandardEnglishLetterTemplatePage(page);
+
+      await uploadPage.loadPage();
+
+      await uploadPage.nameInput.fill('template-name');
+
+      await uploadPage.fileInput.click();
+      await uploadPage.fileInput.setInputFiles(docxFixtures.tooLarge.filepath);
+
+      await uploadPage.submitButton.click();
+
+      await expect(uploadPage.errorSummaryList).toHaveText(
+        'Your file is too large. The file must be smaller than 5MB. Upload a different letter template file'
+      );
+    });
+
     test('displays error messages when blank form is submitted', async ({
       page,
     }) => {

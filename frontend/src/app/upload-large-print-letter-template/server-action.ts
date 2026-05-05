@@ -20,7 +20,8 @@ const $FormSchema = z.object({
     .mime(
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       errors.file.empty
-    ),
+    )
+    .refine((file) => file.size < 5 * 1024 * 1024, errors.file.tooLarge),
 });
 
 export async function uploadLargePrintLetterTemplate(

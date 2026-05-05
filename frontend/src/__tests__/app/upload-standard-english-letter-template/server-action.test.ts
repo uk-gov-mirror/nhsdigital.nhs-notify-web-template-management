@@ -141,6 +141,32 @@ describe('uploadStandardLetterTemplate', () => {
     });
   });
 
+  it('returns validation error when file is too large', async () => {
+    const templateDocx = new File(
+      ['a'.repeat(5 * 1024 * 1024)],
+      'template.docx',
+      {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      }
+    );
+
+    const formData = new FormData();
+    formData.append('name', 'Test Template');
+    formData.append('campaignId', 'Campaign 1');
+    formData.append('file', templateDocx);
+
+    const result = await uploadStandardLetterTemplate({}, formData);
+
+    expect(result.errorState).toEqual({
+      formErrors: [],
+      fieldErrors: {
+        file: [
+          'Your file is too large. The file must be smaller than 5MB. Upload a different letter template file',
+        ],
+      },
+    });
+  });
+
   it('returns validation error when file has incorrect MIME type', async () => {
     const formData = new FormData();
     formData.append('name', 'Test Template');

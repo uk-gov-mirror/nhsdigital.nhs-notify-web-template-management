@@ -2072,6 +2072,8 @@ const uploadDocxLetterTemplateForm = {
     },
     file: {
       empty: 'Choose a template file',
+      tooLarge:
+        'Your file is too large. The file must be smaller than 5MB. Upload a different letter template file',
     },
     language: {
       empty: 'Choose a language',
