@@ -17,6 +17,8 @@ export type LetterUploadMetadata = {
   'version-id': string;
 };
 
+type KeyContext = 'internal' | 'quarantine';
+
 const $FileType: z.ZodType<FileType> = z.enum([
   'docx-template',
   'pdf-template',
@@ -50,7 +52,13 @@ export class LetterUploadRepository extends LetterFileRepository {
     fileType: 'pdf-template' | 'docx-template',
     testDataFile?: File
   ): Promise<ApplicationResult<null>> {
-    const templateKey = `${this.environment}/${this.key(fileType, user.clientId, templateId, versionId)}`;
+    const templateKey = this.key(
+      'quarantine',
+      fileType,
+      user.clientId,
+      templateId,
+      versionId
+    );
 
     const commands: PutObjectCommand[] = [
       new PutObjectCommand({
@@ -68,12 +76,13 @@ export class LetterUploadRepository extends LetterFileRepository {
     ];
 
     if (testDataFile) {
-      const csvKey = `${this.environment}/${this.key(
+      const csvKey = this.key(
+        'quarantine',
         'test-data',
         user.clientId,
         templateId,
         versionId
-      )}`;
+      );
 
       commands.push(
         new PutObjectCommand({
@@ -113,7 +122,7 @@ export class LetterUploadRepository extends LetterFileRepository {
       const { Body } = await this.client.send(
         new GetObjectCommand({
           Bucket: this.internalBucketName,
-          Key: this.key(fileType, owner, templateId, versionId),
+          Key: this.key('internal', fileType, owner, templateId, versionId),
         })
       );
 
@@ -168,12 +177,15 @@ export class LetterUploadRepository extends LetterFileRepository {
   }
 
   private key(
+    context: KeyContext,
     type: FileType,
     clientId: string,
     templateId: string,
     versionId: string
   ) {
-    return `${type}/${clientId}/${templateId}/${versionId}.${LetterUploadRepository.extensionForType(type)}`;
+    const key = `${type}/${clientId}/${templateId}/${versionId}.${LetterUploadRepository.extensionForType(type)}`;
+
+    return context === 'quarantine' ? `${this.environment}/${key}` : key;
   }
 
   private static metadata(
