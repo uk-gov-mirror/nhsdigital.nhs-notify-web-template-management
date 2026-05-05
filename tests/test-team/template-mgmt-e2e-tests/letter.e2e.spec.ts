@@ -149,7 +149,7 @@ test.describe('Letters complete e2e journey', () => {
         await expect(page).toHaveURL(uploadPage.getUrl());
       });
 
-      const templateName = 'E2E Test (Andy)';
+      const templateName = 'E2E Test';
       const campaignId = user.campaignIds?.[0];
 
       const updatedTemplateName = templateName + '-Updated';
@@ -309,10 +309,10 @@ test.describe('Letters complete e2e journey', () => {
       const shortExampleRecipient = SHORT_EXAMPLE_RECIPIENTS[2];
       const longExampleRecipient = LONG_EXAMPLE_RECIPIENTS[2];
 
-      const compareSrc = (a: string | null, b: string | null) => {
+      const expectUpdatedUrl = (a: string | null, b: string | null) => {
         if (!a || !b) {
           throw new Error(
-            `One of the compared src values is null. a: ${a} - b: ${b}`
+            `One of the compared url values is null. a: ${a} - b: ${b}`
           );
         }
 
@@ -320,105 +320,109 @@ test.describe('Letters complete e2e journey', () => {
         expect(path.basename(a)).not.toEqual(path.basename(b));
       };
 
-      let updatedShortRenderSrc: string;
-      let updatedLongRenderSrc: string;
+      const [updatedShortRenderSrc, updatedLongRenderSrc] =
+        await test.step('Fill out personalisation fields and update preview', async () => {
+          const initialShortRenderSrc = await shortTab.getIframeSrc();
+          await expect(shortTab.panel).toBeVisible();
+          await expect(longTab.panel).toBeHidden();
 
-      await test.step('Fill out personalisation fields and update preview', async () => {
-        const initialShortRenderSrc = await shortTab.getIframeSrc();
-        await expect(shortTab.panel).toBeVisible();
-        await expect(longTab.panel).toBeHidden();
-
-        await shortTab.selectRecipient({ value: shortExampleRecipient.id });
-        for (const key in personalisationParameters) {
-          await shortTab
-            .getCustomFieldInput(key)
-            .fill(personalisationParameters[key]);
-        }
-
-        await shortTab.clickUpdatePreview();
-
-        await expect(async () => {
-          const template = await templateStorageHelper.getTemplate(templateKey);
-          const render = template.files?.shortFormRender;
-          expect(render, 'Render should be defined').not.toBeUndefined();
-          expect(render?.status, 'with correct status').toEqual('RENDERED');
-
-          const completePersonalisationParams = {
-            ...shortExampleRecipient.data,
-            ...personalisationParameters,
-          };
-
-          for (const key in render?.personalisationParameters) {
-            if (!(key in completePersonalisationParams)) {
-              continue;
-            }
-
-            expect(
-              render?.personalisationParameters[key],
-              `'${key}' should equal '${completePersonalisationParams[key]}'`
-            ).toEqual(completePersonalisationParams[key]);
+          await shortTab.selectRecipient({ value: shortExampleRecipient.id });
+          for (const key in personalisationParameters) {
+            await shortTab
+              .getCustomFieldInput(key)
+              .fill(personalisationParameters[key]);
           }
-        }, 'Persisted short form render is updated with correct personalisation details').toPass(
-          { timeout: 40_000 }
-        );
 
-        await expect(shortTab.tabSpinner).not.toBeAttached({ timeout: 30_000 });
+          await shortTab.clickUpdatePreview();
 
-        const shortRenderSrc = await shortTab.getIframeSrc();
-        if (!shortRenderSrc) {
-          throw new Error("No 'src' attribute value on short render iframe");
-        }
-        updatedShortRenderSrc = shortRenderSrc;
-        compareSrc(initialShortRenderSrc, updatedShortRenderSrc);
+          await expect(async () => {
+            const template =
+              await templateStorageHelper.getTemplate(templateKey);
+            const render = template.files?.shortFormRender;
+            expect(render, 'Render should be defined').not.toBeUndefined();
+            expect(render?.status, 'with correct status').toEqual('RENDERED');
 
-        await longTab.clickTab();
-        const initialLongRenderSrc = await longTab.getIframeSrc();
-        await expect(shortTab.panel).toBeHidden();
-        await expect(longTab.panel).toBeVisible();
+            const completePersonalisationParams = {
+              ...shortExampleRecipient.data,
+              ...personalisationParameters,
+            };
 
-        await longTab.selectRecipient({ value: longExampleRecipient.id });
-        for (const key in personalisationParameters) {
-          await longTab
-            .getCustomFieldInput(key)
-            .fill(personalisationParameters[key]);
-        }
+            for (const key in render?.personalisationParameters) {
+              if (!(key in completePersonalisationParams)) {
+                continue;
+              }
 
-        await longTab.clickUpdatePreview();
-
-        await expect(async () => {
-          const template = await templateStorageHelper.getTemplate(templateKey);
-          const render = template.files?.longFormRender;
-          expect(render, 'Render should be defined').not.toBeUndefined();
-          expect(render?.status, 'with correct status').toEqual('RENDERED');
-
-          const completePersonalisationParams = {
-            ...longExampleRecipient.data,
-            ...personalisationParameters,
-          };
-
-          for (const key in render?.personalisationParameters) {
-            if (!(key in completePersonalisationParams)) {
-              continue;
+              expect(
+                render?.personalisationParameters[key],
+                `'${key}' should equal '${completePersonalisationParams[key]}'`
+              ).toEqual(completePersonalisationParams[key]);
             }
+          }, 'Persisted short form render is updated with correct personalisation details').toPass(
+            { timeout: 40_000 }
+          );
 
-            expect(
-              render?.personalisationParameters[key],
-              `'${key}' should equal '${completePersonalisationParams[key]}'`
-            ).toEqual(completePersonalisationParams[key]);
+          await expect(shortTab.tabSpinner).not.toBeAttached({
+            timeout: 30_000,
+          });
+
+          const shortRenderSrc = await shortTab.getIframeSrc();
+          if (!shortRenderSrc) {
+            throw new Error("No 'src' attribute value on short render iframe");
           }
-        }, 'Persisted long form render is updated with correct personalisation details').toPass(
-          { timeout: 40_000 }
-        );
+          expectUpdatedUrl(initialShortRenderSrc, shortRenderSrc);
 
-        await expect(longTab.tabSpinner).not.toBeAttached({ timeout: 30_000 });
+          await longTab.clickTab();
+          const initialLongRenderSrc = await longTab.getIframeSrc();
+          await expect(shortTab.panel).toBeHidden();
+          await expect(longTab.panel).toBeVisible();
 
-        const longRenderSrc = await longTab.getIframeSrc();
-        if (!longRenderSrc) {
-          throw new Error("No 'src' attribute value on short render iframe");
-        }
-        updatedLongRenderSrc = longRenderSrc;
-        compareSrc(initialLongRenderSrc, updatedLongRenderSrc);
-      });
+          await longTab.selectRecipient({ value: longExampleRecipient.id });
+          for (const key in personalisationParameters) {
+            await longTab
+              .getCustomFieldInput(key)
+              .fill(personalisationParameters[key]);
+          }
+
+          await longTab.clickUpdatePreview();
+
+          await expect(async () => {
+            const template =
+              await templateStorageHelper.getTemplate(templateKey);
+            const render = template.files?.longFormRender;
+            expect(render, 'Render should be defined').not.toBeUndefined();
+            expect(render?.status, 'with correct status').toEqual('RENDERED');
+
+            const completePersonalisationParams = {
+              ...longExampleRecipient.data,
+              ...personalisationParameters,
+            };
+
+            for (const key in render?.personalisationParameters) {
+              if (!(key in completePersonalisationParams)) {
+                continue;
+              }
+
+              expect(
+                render?.personalisationParameters[key],
+                `'${key}' should equal '${completePersonalisationParams[key]}'`
+              ).toEqual(completePersonalisationParams[key]);
+            }
+          }, 'Persisted long form render is updated with correct personalisation details').toPass(
+            { timeout: 40_000 }
+          );
+
+          await expect(longTab.tabSpinner).not.toBeAttached({
+            timeout: 30_000,
+          });
+
+          const longRenderSrc = await longTab.getIframeSrc();
+          if (!longRenderSrc) {
+            throw new Error("No 'src' attribute value on short render iframe");
+          }
+          expectUpdatedUrl(initialLongRenderSrc, longRenderSrc);
+
+          return [shortRenderSrc, longRenderSrc];
+        });
 
       await test.step('Get ready to approve', async () => {
         await previewTemplatePage.continueButton.click();
