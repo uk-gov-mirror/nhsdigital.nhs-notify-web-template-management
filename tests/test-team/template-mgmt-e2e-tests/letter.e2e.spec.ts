@@ -373,6 +373,7 @@ test.describe('Letters complete e2e journey', () => {
 
           await longTab.clickTab();
           const initialLongRenderSrc = await longTab.getIframeSrc();
+          expect(initialLongRenderSrc).toEqual(initialShortRenderSrc);
           await expect(shortTab.panel).toBeHidden();
           await expect(longTab.panel).toBeVisible();
 
