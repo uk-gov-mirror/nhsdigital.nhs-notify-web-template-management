@@ -55,7 +55,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -153,7 +153,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -238,7 +238,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -317,7 +317,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -414,7 +414,7 @@ describe('guard duty handler', () => {
     const event = {
       detail: {
         s3ObjectDetails: {
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
           versionId: 's3-version-id',
         },
         scanResultDetails: {},
@@ -431,7 +431,7 @@ describe('guard duty handler', () => {
       const event = {
         detail: {
           s3ObjectDetails: {
-            objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+            objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
             versionId: 's3-version-id',
           },
           scanResultDetails: {
@@ -449,7 +449,7 @@ describe('guard duty handler', () => {
     const event = {
       detail: {
         s3ObjectDetails: {
-          objectKey: `pdf-template/${clientId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${versionId}.pdf`,
           versionId: 's3-version-id',
         },
         scanResultDetails: {
@@ -466,7 +466,7 @@ describe('guard duty handler', () => {
     const event = {
       detail: {
         s3ObjectDetails: {
-          objectKey: `pdf-template/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${templateId}/${versionId}.pdf`,
           versionId: 's3-version-id',
         },
         scanResultDetails: {
@@ -483,7 +483,7 @@ describe('guard duty handler', () => {
     const event = {
       detail: {
         s3ObjectDetails: {
-          objectKey: `${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/${clientId}/${templateId}/${versionId}.pdf`,
           versionId: 's3-version-id',
         },
         scanResultDetails: {
@@ -500,7 +500,7 @@ describe('guard duty handler', () => {
     const event = {
       detail: {
         s3ObjectDetails: {
-          objectKey: `unknown/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/unknown/${clientId}/${templateId}/${versionId}.pdf`,
           versionId: 's3-version-id',
         },
         scanResultDetails: {
@@ -517,7 +517,7 @@ describe('guard duty handler', () => {
     const event = {
       detail: {
         s3ObjectDetails: {
-          objectKey: `pdf-template/${clientId}/${templateId}/unexpected-file-name`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/unexpected-file-name`,
           versionId: 's3-version-id',
         },
         scanResultDetails: {
@@ -536,7 +536,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -570,7 +570,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -600,7 +600,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -632,7 +632,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -673,7 +673,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -714,7 +714,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -744,7 +744,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -785,7 +785,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -826,7 +826,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -867,7 +867,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -908,7 +908,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -951,7 +951,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -995,7 +995,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -1043,7 +1043,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -1091,7 +1091,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -1151,7 +1151,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -1215,7 +1215,7 @@ describe('guard duty handler', () => {
       detail: {
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
-          objectKey: `pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
+          objectKey: `test-env/pdf-template/${clientId}/${templateId}/${versionId}.pdf`,
         },
         scanResultDetails: {
           scanResultStatus: 'NO_THREATS_FOUND',
@@ -1290,7 +1290,8 @@ describe('sqs-handler', () => {
           detail: {
             s3ObjectDetails: {
               bucketName: 'quarantine-bucket',
-              objectKey: 'pdf-template/owner-id/template-id/version-id.pdf',
+              objectKey:
+                'test-env/pdf-template/owner-id/template-id/version-id.pdf',
             },
           },
         })
@@ -1302,7 +1303,8 @@ describe('sqs-handler', () => {
           detail: {
             s3ObjectDetails: {
               bucketName: 'quarantine-bucket',
-              objectKey: 'test-data/owner-id/template-id/version-id.csv',
+              objectKey:
+                'test-env/test-data/owner-id/template-id/version-id.csv',
             },
           },
         })

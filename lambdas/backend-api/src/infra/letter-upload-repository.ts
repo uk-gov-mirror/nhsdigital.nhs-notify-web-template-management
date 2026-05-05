@@ -130,23 +130,16 @@ export class LetterUploadRepository extends LetterFileRepository {
   static parseKey(key: string): LetterUploadMetadata {
     const keyParts = key.split('/');
 
-    // TODO: CCM-12777 - revert back post release
-    let type: string;
-    let clientId: string;
-    let templateId: string;
-    let filename: string;
-
-    if (keyParts.length === 5) {
-      [, type, clientId, templateId, filename] = keyParts;
-    } else if (keyParts.length === 4) {
-      [type, clientId, templateId, filename] = keyParts;
-    } else {
+    if (keyParts.length !== 5) {
       throw new Error(
-        `Invalid object key "${key}": expected 4 or 5 path segments, got ${keyParts.length}`
+        `Invalid object key "${key}": expected 5 path segments, got ${keyParts.length}`
       );
     }
 
+    const [, type, clientId, templateId, filename] = keyParts;
+
     const filenameParts = filename.split('.');
+
     const [versionId, extension] = filenameParts;
 
     if (filenameParts.length !== 2) {

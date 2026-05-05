@@ -22,7 +22,7 @@ it('sets the virus scan status on pdf uploads identified by file metadata', asyn
       s3ObjectDetails: {
         bucketName: 'quarantine-bucket',
         objectKey:
-          'pdf-template/template-owner/template-id/template-version.pdf',
+          'test-env/pdf-template/template-owner/template-id/template-version.pdf',
         versionId: 'pdf-s3-version-id',
       },
       scanResultDetails: { scanResultStatus: 'NO_THREATS_FOUND' },
@@ -51,7 +51,8 @@ it('sets the virus scan status on csv files identified by file metadata', async 
     detail: {
       s3ObjectDetails: {
         bucketName: 'quarantine-bucket',
-        objectKey: 'test-data/template-owner/template-id/template-version.csv',
+        objectKey:
+          'test0env/test-data/template-owner/template-id/template-version.csv',
         versionId: 'test-data-s3-version-id',
       },
       scanResultDetails: { scanResultStatus: 'NO_THREATS_FOUND' },
@@ -81,7 +82,7 @@ it('sets the virus scan status on docx files identified by file metadata', async
       s3ObjectDetails: {
         bucketName: 'quarantine-bucket',
         objectKey:
-          'docx-template/template-owner/template-id/template-version.docx',
+          'test-env/docx-template/template-owner/template-id/template-version.docx',
         versionId: 'test-data-s3-version-id',
       },
       scanResultDetails: { scanResultStatus: 'NO_THREATS_FOUND' },
@@ -113,7 +114,7 @@ it.each($GuardDutyMalwareScanStatusFailed.options)(
         s3ObjectDetails: {
           bucketName: 'quarantine-bucket',
           objectKey:
-            'pdf-template/template-owner/template-id/template-version.pdf',
+            'test-env/pdf-template/template-owner/template-id/template-version.pdf',
           versionId: 'pdf-s3-version-id',
         },
         scanResultDetails: { scanResultStatus: status },
@@ -162,7 +163,7 @@ it('errors if event has no scan result status', async () => {
       s3ObjectDetails: {
         bucketName: 'quarantine-bucket',
         objectKey:
-          'pdf-template/template-owner/template-id/template-version.pdf',
+          'test-env/pdf-template/template-owner/template-id/template-version.pdf',
         versionId: 'pdf-s3-version-id',
       },
       scanResultDetails: {},
@@ -183,7 +184,7 @@ it('errors if event has invalid scan result status', async () => {
       s3ObjectDetails: {
         bucketName: 'quarantine-bucket',
         objectKey:
-          'pdf-template/template-owner/template-id/template-version.pdf',
+          'test-env/pdf-template/template-owner/template-id/template-version.pdf',
         versionId: 'pdf-s3-version-id',
       },
       scanResultDetails: { scanResultStatus: 'UNKNOWN_STATUS' },
@@ -203,7 +204,7 @@ it('errors if event object key has proofs/ prefix', async () => {
     detail: {
       s3ObjectDetails: {
         bucketName: 'quarantine-bucket',
-        objectKey: 'proofs/supplier/template-id/proof.pdf',
+        objectKey: 'test-env/proofs/supplier/template-id/proof.pdf',
         versionId: 'pdf-s3-version-id',
       },
       scanResultDetails: { scanResultStatus: 'NO_THREATS_FOUND' },
@@ -226,7 +227,7 @@ it('errors if status update fails', async () => {
       s3ObjectDetails: {
         bucketName: 'quarantine-bucket',
         objectKey:
-          'pdf-template/template-owner/template-id/template-version.pdf',
+          'test-env/pdf-template/template-owner/template-id/template-version.pdf',
         versionId: 'pdf-s3-version-id',
       },
       scanResultDetails: { scanResultStatus: 'NO_THREATS_FOUND' },
