@@ -7,24 +7,16 @@ resource "aws_cloudwatch_event_rule" "guardduty_quarantine_scan_failed_for_uploa
     detail-type = ["GuardDuty Malware Protection Object Scan Result"]
     resources = [
       var.guardduty_protection_plan_quarantine_arn,
-      #TODO: CCM-12777: delete
-      aws_guardduty_malware_protection_plan.quarantine.arn
     ]
     detail = {
       s3ObjectDetails = {
         bucketName = [
           data.aws_s3_bucket.quarantine.id,
-          #TODO: CCM-12777: delete
-          module.s3bucket_quarantine.id
         ]
         objectKey = [
           { prefix = "${var.environment}/docx-template/" },
           { prefix = "${var.environment}/pdf-template/" },
           { prefix = "${var.environment}/test-data/" },
-          # TODO: CCM-12777 delete
-          { prefix = "docx-template/" },
-          { prefix = "pdf-template/" },
-          { prefix = "test-data/" }
         ]
       }
       scanResultDetails = {
