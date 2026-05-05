@@ -35,7 +35,7 @@ describe('createHandler', () => {
 
     const event = makeS3ObjectCreatedEvent({
       object: {
-        key: 'test-env/docx-template/client-123/template-456/version-789.docx',
+        key: 'docx-template/client-123/template-456/version-789.docx',
       },
     });
 
@@ -81,7 +81,7 @@ describe('createHandler', () => {
     });
 
     await expect(handler(event)).rejects.toThrow(
-      'Invalid object key "only/two": expected 5 path segments, got 2'
+      'Invalid object key "only/two": expected 4 or 5 path segments, got 2'
     );
 
     expect(mocks.sqsClient.send).not.toHaveBeenCalled();
@@ -92,7 +92,7 @@ describe('createHandler', () => {
 
     const event = makeS3ObjectCreatedEvent({
       object: {
-        key: 'test-env/pdf-template/client-123/template-456/version-789.pdf',
+        key: 'pdf-template/client-123/template-456/version-789.pdf',
       },
     });
 

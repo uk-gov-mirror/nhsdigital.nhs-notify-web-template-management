@@ -49,6 +49,8 @@ data "aws_iam_policy_document" "delete_failed_scanned_object" {
 
     resources = [
       "${data.aws_s3_bucket.quarantine.arn}/${var.environment}/*",
+      # TODO: CCM-12777: delete
+      "${module.s3bucket_quarantine.arn}/*"
     ]
   }
 

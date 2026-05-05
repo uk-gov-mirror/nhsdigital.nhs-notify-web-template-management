@@ -10,13 +10,21 @@ export class LetterProofRepository extends LetterFileRepository {
   static parseQuarantineKey(key: string): LetterProofMetadata {
     const keyParts = key.split('/');
 
-    if (keyParts.length !== 5) {
+    // TODO: CCM-12777 - revert back post release
+    let fileType: string;
+    let supplier: string;
+    let templateId: string;
+    let fileName: string;
+
+    if (keyParts.length === 5) {
+      [, fileType, supplier, templateId, fileName] = keyParts;
+    } else if (keyParts.length === 4) {
+      [fileType, supplier, templateId, fileName] = keyParts;
+    } else {
       throw new Error(
-        `Invalid object key "${key}": expected 5 path segments, got ${keyParts.length}`
+        `Invalid object key "${key}": expected 4 or 5 path segments, got ${keyParts.length}`
       );
     }
-
-    const [, fileType, supplier, templateId, fileName] = keyParts;
 
     const extension = fileName.split('.').at(-1);
 

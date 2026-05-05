@@ -198,12 +198,11 @@ describe('LetterUploadRepository', () => {
   });
 
   describe('static parseKey', () => {
-    test('returns metadata from valid pdf key', () => {
-      expect(
-        LetterUploadRepository.parseKey(
-          'test-env/pdf-template/owner-id/template-id/version-id.pdf'
-        )
-      ).toEqual({
+    it.each([
+      'pdf-template/owner-id/template-id/version-id.pdf',
+      'test-env/pdf-template/owner-id/template-id/version-id.pdf',
+    ])('returns metadata from valid pdf key: %p', (objectKey) => {
+      expect(LetterUploadRepository.parseKey(objectKey)).toEqual({
         'file-type': 'pdf-template',
         'client-id': 'owner-id',
         'template-id': 'template-id',
@@ -211,12 +210,11 @@ describe('LetterUploadRepository', () => {
       });
     });
 
-    test('returns metadata from valid csv key', () => {
-      expect(
-        LetterUploadRepository.parseKey(
-          'test-env/test-data/owner-id/template-id/version-id.csv'
-        )
-      ).toEqual({
+    test.each([
+      'test-data/owner-id/template-id/version-id.csv',
+      'test-env/test-data/owner-id/template-id/version-id.csv',
+    ])('returns metadata from valid csv key: %p', (objectKey) => {
+      expect(LetterUploadRepository.parseKey(objectKey)).toEqual({
         'file-type': 'test-data',
         'client-id': 'owner-id',
         'template-id': 'template-id',
@@ -224,12 +222,11 @@ describe('LetterUploadRepository', () => {
       });
     });
 
-    test('returns metadata from valid docx key', () => {
-      expect(
-        LetterUploadRepository.parseKey(
-          'test-env/docx-template/owner-id/template-id/version-id.docx'
-        )
-      ).toEqual({
+    test.each([
+      'docx-template/owner-id/template-id/version-id.docx',
+      'test-env/docx-template/owner-id/template-id/version-id.docx',
+    ])('returns metadata from valid docx key: %p', (objectKey) => {
+      expect(LetterUploadRepository.parseKey(objectKey)).toEqual({
         'file-type': 'docx-template',
         'client-id': 'owner-id',
         'template-id': 'template-id',
@@ -254,7 +251,7 @@ describe('LetterUploadRepository', () => {
     it('errors if invalid file type segment', () => {
       expect(() =>
         LetterUploadRepository.parseKey(
-          'test-env/unexpected-type/owner-id/template-id/version-id.csv'
+          'unexpected-type/owner-id/template-id/version-id.csv'
         )
       ).toThrowErrorMatchingSnapshot();
     });
@@ -262,7 +259,7 @@ describe('LetterUploadRepository', () => {
     it('errors if no file extension', () => {
       expect(() =>
         LetterUploadRepository.parseKey(
-          'test-env/test-data/owner-id/template-id/version-id'
+          'test-data/owner-id/template-id/version-id'
         )
       ).toThrowErrorMatchingSnapshot();
     });
@@ -270,7 +267,7 @@ describe('LetterUploadRepository', () => {
     it('errors if filename has too many parts', () => {
       expect(() =>
         LetterUploadRepository.parseKey(
-          'test-env/test-data/owner-id/template-id/version-id.unexpected.csv'
+          'test-data/owner-id/template-id/version-id.unexpected.csv'
         )
       ).toThrowErrorMatchingSnapshot();
     });
@@ -278,7 +275,7 @@ describe('LetterUploadRepository', () => {
     it('errors if file extension does not match csv file type', () => {
       expect(() =>
         LetterUploadRepository.parseKey(
-          'test-env/test-data/owner-id/template-id/version-id.pdf'
+          'test-data/owner-id/template-id/version-id.pdf'
         )
       ).toThrowErrorMatchingSnapshot();
     });
@@ -286,7 +283,7 @@ describe('LetterUploadRepository', () => {
     it('errors if file extension does not match pdf file type', () => {
       expect(() =>
         LetterUploadRepository.parseKey(
-          'test-env/pdf-template/owner-id/template-id/version-id.csv'
+          'pdf-template/owner-id/template-id/version-id.csv'
         )
       ).toThrowErrorMatchingSnapshot();
     });
@@ -294,7 +291,7 @@ describe('LetterUploadRepository', () => {
     it('errors if file extension does not match docx file type', () => {
       expect(() =>
         LetterUploadRepository.parseKey(
-          'test-env/docx-template/owner-id/template-id/version-id.pdf'
+          'docx-template/owner-id/template-id/version-id.pdf'
         )
       ).toThrowErrorMatchingSnapshot();
     });
